@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+const pg = require('pg'); // <-- 1. Import modul pg secara eksplisit di sini
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
@@ -11,8 +12,10 @@ const db = {};
 
 let sequelize;
 if (env === 'production' && config.use_env_variable) {
+  // 2. Tambahkan dialectModule: pg agar Vercel tidak mencari secara dinamis
   sequelize = new Sequelize(process.env[config.use_env_variable], {
     dialect: config.dialect,
+    dialectModule: pg, 
     dialectOptions: config.dialectOptions
   });
 } else if (config.use_env_variable) {

@@ -12,11 +12,15 @@ const db = {};
 
 let sequelize;
 if (env === 'production' && config.use_env_variable) {
-  // 2. Tambahkan dialectModule: pg agar Vercel tidak mencari secara dinamis
   sequelize = new Sequelize(process.env[config.use_env_variable], {
     dialect: config.dialect,
     dialectModule: pg, 
-    dialectOptions: config.dialectOptions
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false // <--- Tambahkan ini agar mengizinkan sertifikat SSL Supabase
+      }
+    }
   });
 } else if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
